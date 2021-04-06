@@ -1,0 +1,68 @@
+#define BLUE 5
+#define GREEN 4
+
+int trigPin= 3;
+int buzzerPin = 2;
+int echoPin = 7;
+int minDistance = 100;
+int maxDistance = 300;
+
+void setup() 
+{
+  pinMode(buzzerPin,OUTPUT);
+  pinMode(BLUE, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(trigPin,OUTPUT);
+}
+
+void loop()
+{
+      
+  int distance = calcDistance();
+  Serial.println(distance);
+  if(distance>=minDistance && distance< maxDistance)
+  {
+      digitalWrite(BLUE,HIGH);
+      digitalWrite(GREEN, HIGH);
+      delay(100);
+      digitalWrite(BLUE,LOW);
+      digitalWrite(GREEN,LOW);
+      digitalWrite(GREEN, HIGH);
+      long duration =pulseIn(echoPin,HIGH);
+      if(duration>10)
+      {
+       digitalWrite(BLUE,HIGH);
+      }
+      digitalWrite(buzzerPin, HIGH);
+  }
+  else
+  {
+      digitalWrite(BLUE,LOW);
+      digitalWrite(GREEN,LOW);
+      digitalWrite(buzzerPin, LOW);
+  }
+}
+
+int calcDistance()
+{
+  long distance,duration;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration/29/2;
+  if(distance >= maxDistance)
+  {
+    distance = maxDistance;
+  }
+  
+  if(distance <= minDistance)
+  {
+    distance = minDistance;
+  }
+  
+  return distance;
+}
